@@ -802,8 +802,8 @@ def start_game(word_list, Is_using_no_duplicates=True):
     score = 0
     total_questions = 0
 
-    while True:
-        # 문제 출제 및 입력 처리
+    while True:#문제 모드 선택 및 문제 출력(한 번만)
+        # 문제 모드 선택
         if Is_using_no_duplicates:
             current_word = get_random_word_no_duplicates(word_list)
         else:
@@ -816,7 +816,7 @@ def start_game(word_list, Is_using_no_duplicates=True):
         # 문제 출력 (한 번만)
         print(f"문제 {total_questions + 1}: {current_word['korean']}")
 
-        # 입력 루프 - 같은 문제에 대해 반복
+        # 내포 루프 - 입력에 대한 반응(정오답 또는 돌아가기 명령어가 입력될 때까지, 그 외엔 반복적으로 입력 요구)
         while True:
             print("영어 단어를 입력하세요: ", end="")
             try:
