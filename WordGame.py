@@ -800,9 +800,9 @@ def start_game(word_list, Is_using_no_duplicates=True):
     print("💡 명령어: \\quit(그만두고 통계치를 보며 메뉴로 돌아가기), Ctrl+c(강제 종료)\n")
 
     score = 0
-    total_questions = 0
+    counted_questions = 0
 
-    while True:#문제 모드 선택 및 문제 출력(한 번만)
+    while True:#부모 루프: 문제 모드 선택 및 문제 출력(한 번만)
         # 문제 모드 선택
         if Is_using_no_duplicates:
             current_word = get_random_word_no_duplicates(word_list)
@@ -814,21 +814,21 @@ def start_game(word_list, Is_using_no_duplicates=True):
             break
 
         # 문제 출력 (한 번만)
-        print(f"문제 {total_questions + 1}: {current_word['korean']}")
+        print(f"문제 {counted_questions + 1}: {current_word['korean']}")
 
-        # 내포 루프 - 입력에 대한 반응(정오답 또는 돌아가기 명령어가 입력될 때까지, 그 외엔 반복적으로 입력 요구)
+        # 자녀 루프: 입력에 대한 반응(정오답 또는 돌아가기 명령어가 입력될 때까지, 그 외엔 반복적으로 입력 요구)
         while True:
             print("영어 단어를 입력하세요: ", end="")
             try:
                 user_input = input().strip().lower()
                 if user_input == '\\quit':
                     print("\n👋 퀴즈를 종료합니다.")
-                    show_quiz_stats_and_return(score, total_questions)  # ← 중간 통계 추가
-                    return  # ← 함수 전체 종료!                # 빈 입력 처리
-                elif not user_input:
+                    show_quiz_stats_and_return(score, counted_questions)  # ← 중간 통계 추가
+                    return  # ← 함수 전체 종료!                
+                elif not user_input:# 빈 입력 처리
                     print("❌ 입력이 없습니다. 다시 시도해주세요.")                            
                 else:# 정답 비교
-                    total_questions += 1
+                    counted_questions += 1
                     if IsCorrectAnswer(user_input, current_word['english']):
                         print("✅ 정답입니다!")
                         score += 1
@@ -836,10 +836,10 @@ def start_game(word_list, Is_using_no_duplicates=True):
                         print(f"❌ 오답입니다. 정답은: {current_word['english']}")
 
                 # 현재 점수 표시
-                print(f"현재 점수: {score}/{total_questions}")
+                print(f"현재 점수: {score}/{counted_questions}")
 
                 # 진행 상황 표시
-                if Is_using_no_duplicates and total_questions < len(word_list):
+                if Is_using_no_duplicates and counted_questions < len(word_list):
                     remaining = len(word_list) - len(asked_words)
                     print(f"남은 단어: {remaining}개")
                     print("-" * 30)
@@ -849,18 +849,18 @@ def start_game(word_list, Is_using_no_duplicates=True):
 
             except (EOFError, KeyboardInterrupt):
                 print("\n👋 퀴즈를 종료합니다.")
-                show_quiz_stats_and_return(score, total_questions)  # ← 중간 통계 추가
+                show_quiz_stats_and_return(score, counted_questions)  # ← 중간 통계 추가
                 return  # ← 함수 전체 종료!
 
     # 퀴즈 자연 종료 시 최종 결과
-    show_quiz_stats_and_return(score, total_questions)
+    show_quiz_stats_and_return(score, counted_questions)
 
-def show_quiz_stats_and_return(score, total_questions):
+def show_quiz_stats_and_return(score, counted_questions):
     """중간 통계를 보여주고 메뉴로 돌아가기"""
-    if total_questions > 0:
-        percentage = (score / total_questions) * 100
+    if counted_questions > 0:
+        percentage = (score / counted_questions) * 100
         print(f"\n📊 현재까지의 통계:")
-        print(f"(오답 개수)/(진행한 문제) = {total_questions - score}/{total_questions}")
+        print(f"(오답 개수)/(진행한 문제) = {counted_questions - score}/{counted_questions}")
         print(f"오답률: {100-percentage:.1f}%")
         print(f"정답률: {percentage:.1f}%")
 
